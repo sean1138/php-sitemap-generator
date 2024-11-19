@@ -7,9 +7,9 @@ enter any website address to crawl and generate a sitemap.xml file, file saved i
 
 hardcoded to skip links like emails, tel, and external links.
 
-textarea to add custom paths to blacklist if desired.
+textarea to add custom paths to blacklist if desired but not tested.
 
-works on my machine ;)
+tested PHP versions 8.1.0 and 7.0.33... works on my machines ;)
 
 ## step 1
 ![screenshot of step 1](https://github.com/sean1138/smg/blob/main/screenshot-01.jpg?raw=true)

@@ -258,7 +258,7 @@
 			</label>
 			<label>
 				Blacklist (one rule per line):
-				<textarea name="blacklist" rows="5" placeholder="Example: /admin\n/example-folder"></textarea>
+				<textarea name="blacklist" rows="5" placeholder="Example: &#10;/admin&#10;/example-folder"></textarea>
 			</label>
 			<button type="submit">Generate Sitemap</button>
 		</form>
