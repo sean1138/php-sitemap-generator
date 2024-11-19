@@ -1,0 +1,138 @@
+html {
+	scroll-behavior: smooth;
+	/*			scroll-padding-top: 160px;*/
+	font-size: min(4vmin, calc(100% + .125vmax));
+	/* the base padding size var(--p-unit) is for top/bottom on sections at desktop res, use half of that for left/right, lower than desktop res not accounted for in this file */
+	--p-unit: 3rem;
+	--p-unit-tb: var(--p-unit);
+	--p-unit-lr: calc(var(--p-unit) / 2);
+	/* see type-scale.com */
+	--type-scale: 1.200;
+	/* do some letter-spacing scaling similar to your type scale value */
+	--ls-scale: .0120em;
+	--vs-lh: 1.5;
+	--vs-gap: calc(var(--p-unit) / 2);
+}
+
+body {
+	margin: 0;
+	/* remove empty space below footer on short content pages 1/2 */
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+footer {
+	/* remove empty space below footer on short content pages 2/2 */
+	margin-top: auto;
+}
+
+header,
+main,
+footer {
+	/*			border:1px solid red;*/
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	/*			width: calc(100% - (var(--p-unit-lr) *2));*/
+	gap: var(--vs-gap);
+	padding: 0 var(--p-unit-lr);
+}
+
+main {
+	padding: var(--p-unit-tb) var(--p-unit-lr);
+}
+
+header *,
+main *,
+footer * {
+	/*			border:1px solid green;*/
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vs-gap);
+}
+
+input,
+textarea {
+	display: block;
+	width: 100%;
+	padding: 6px 12px;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #212529;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	appearance: none;
+	border-radius: 4px;
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+	&:focus {
+		color: #212529;
+		background-color: #fff;
+		border-color: #86b7fe;
+		outline: 0;
+		box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+	}
+}
+
+button {
+	cursor: pointer;
+	outline: 0;
+	display: inline-block;
+	font-weight: 400;
+	line-height: 1.5;
+	text-align: center;
+	background-color: transparent;
+	border: 1px solid transparent;
+	padding: 6px 12px;
+	font-size: 1rem;
+	border-radius: .25rem;
+	transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+	color: #0d6efd;
+	border-color: #0d6efd;
+
+	&:hover {
+		color: #fff;
+		background-color: #0d6efd;
+		border-color: #0d6efd;
+	}
+}
+
+.log {
+	font-family: monospace;
+	unicode-bidi: isolate;
+	padding: 1em .5em;
+	background: #16131A;
+	color: #00b900;
+/*	*/
+	overflow-y: auto;
+	height: 50vh;
+	border: 1px solid #ccc;
+	scroll-behavior: smooth;
+}
+
+.log p {
+	margin: 0;
+	width: 80ch;
+}
+.log p + p{
+	margin-top:.5em;
+}
+.skip{
+	color:ff0;
+}
+.fail{
+	color:f00;
+}
+.log a{
+	color:#00bbff;
+	word-break: break-word;
+}
+.msg {
+	padding: 0 var(--p-unit-lr);
+}

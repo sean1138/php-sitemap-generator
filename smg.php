@@ -11,7 +11,34 @@
 	}
 
 	if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		set_time_limit(0); // Allow script to run indefinitely for larger crawls
+		set_time_limit(0);       // Allow script to run indefinitely for large crawls
+		ob_implicit_flush(true); // Enable implicit flush for immediate output
+		header('Content-Type: text/html; charset=UTF-8');
+		echo "<link rel='stylesheet' href='smg.css'><div class='log' id='logContainer'><div id='logOutput'>";
+		echo "<progress id='crawlProgress' value='0' max='100' style='margin-top: 10px; position: fixed; top: 1em; right: 2em;'></progress>
+		<script>
+					// update progress bar
+					const progressElement = document.getElementById('crawlProgress');
+					let totalUrls = 1; // Start with 1 to prevent division by zero
+					let crawledUrls = 0;
+
+					function updateProgress() {
+						crawledUrls++;
+						progressElement.value = (crawledUrls / totalUrls) * 100;
+					}
+
+					function setTotalUrls(count) {
+						totalUrls = count;
+						progressElement.max = count;
+					}
+				</script>";
+		echo "<script>document.getElementById('crawlProgress').style.display = 'block';</script>";
+		$estimatedTotalUrls = 100; // Replace this with an actual estimation if available
+		echo "<script>setTotalUrls($estimatedTotalUrls);</script>";
+		flush();
+		ob_flush();
+
+		// Start URL and blacklist configuration
 		$startUrl   = filter_var($_POST['url'], FILTER_VALIDATE_URL);
 		$blacklist  = array_filter(array_map('trim', explode("\n", $_POST['blacklist'])));
 		$outputFile = 'sitemap.xml';
@@ -22,54 +49,34 @@
 
 		$visited = [];
 		$urls    = [];
-		$log     = [];
 
-		function crawl($url, $baseUrl, $blacklist, &$visited, &$urls, &$log) {
-			// Skip already visited URLs or those not starting with the base URL
+		function log_message($message) {
+			echo "<p>[" . date('Y-m-d H:i:s') . "] $message" . "</p>" . PHP_EOL;
+			flush();    // Send output to the browser
+			ob_flush(); // Ensure output is sent immediately
+		}
+
+		function crawl($url, $baseUrl, $blacklist, &$visited, &$urls) {
 			if (isset($visited[$url]) || ! str_starts_with($url, $baseUrl)) {
 				return;
 			}
 
-			// Exclude URLs with fragments (#anchors)
-			if (strpos($url, '#') !== false) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (anchor): $url";
-				return;
-			}
-			// Exclude email links
-			if (str_starts_with($url, 'mailto:')) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (mailto): $url";
-				return;
-			}
-			// Exclude telephone links
-			if (str_starts_with($url, 'tel:')) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (tel): $url";
-				return;
-			}
-			// Exclude javascript:() links
-			if (str_starts_with($url, 'javascript:')) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (javascript): $url";
-				return;
-			}
-			// Exclude external links
-			if (! str_starts_with($url, $baseUrl)) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (external): $url";
-				return;
-			}
-			// Exclude non-html links
-			$excludedExtensions = ['jpg', 'png', 'gif', 'pdf', 'docx', 'zip'];
-			if (preg_match('/\.' . implode('|', $excludedExtensions) . '$/i', $url)) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Skipped (file type): $url";
+			// Exclude unwanted URLs
+			if (strpos($url, '#') !== false || str_starts_with($url, 'mailto:') ||
+				str_starts_with($url, 'tel:') || str_starts_with($url, 'javascript:')) {
+				log_message("<span class=\"skip\">Skipped: <a href=\"$url\" target=\"_blank\">$url</a></span>");
 				return;
 			}
 
 			$visited[$url] = true;
-
-			global $log;
-			$log[] = "[" . date('Y-m-d H:i:s') . "] Crawling: $url";
+			log_message("<span class=\"crawl\">Crawling: <a href=\"$url\" target=\"_blank\">$url</a></span>");
+			echo '<script>updateProgress();</script>';
+			flush();
+			ob_flush();
 
 			$html = @file_get_contents($url);
 			if ($html === false) {
-				$log[] = "[" . date('Y-m-d H:i:s') . "] Failed to access: $url";
+				log_message("<span class=\"fail\">Failed to access: <a href=\"$url\" target=\"_blank\">$url</a></span>");
 				return;
 			}
 
@@ -79,7 +86,7 @@
 			foreach ($matches[1] as $link) {
 				$link = resolveUrl($link, $baseUrl);
 				if (! inBlacklist($link, $blacklist)) {
-					crawl($link, $baseUrl, $blacklist, $visited, $urls, $log);
+					crawl($link, $baseUrl, $blacklist, $visited, $urls);
 				}
 			}
 		}
@@ -97,11 +104,13 @@
 			return false;
 		}
 
-		crawl($startUrl, $startUrl, $blacklist, $visited, $urls, $log);
+		// Begin crawling process
+		log_message("Starting crawl for: $startUrl");
+		crawl($startUrl, $startUrl, $blacklist, $visited, $urls);
+		log_message("Crawling completed.");
 
 		// Generate sitemap
 		$sitemap = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-		// add a stylesheet to make it pretty
 		$sitemap .= '<?xml-stylesheet type="text/css" href="sitemap.css"?>' . PHP_EOL;
 		$sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
@@ -109,45 +118,35 @@
 			$sitemap .= "  <url>" . PHP_EOL;
 			$sitemap .= "    <loc>" . htmlspecialchars($url) . "</loc>" . PHP_EOL;
 
-			// Determine last modified date dynamically
-			$parsedUrl = parse_url($url);
-			$path      = isset($parsedUrl['path']) ? $parsedUrl['path'] : '/';
-			$filePath  = $_SERVER['DOCUMENT_ROOT'] . $path;
+			$parsedUrl    = parse_url($url);
+			$path         = isset($parsedUrl['path']) ? $parsedUrl['path'] : '/';
+			$filePath     = $_SERVER['DOCUMENT_ROOT'] . $path;
+			$lastModified = file_exists($filePath) ? date('Y-m-d', filemtime($filePath)) : date('Y-m-d');
 
-			// Check if file exists and get last modification time
-			if (file_exists($filePath)) {
-				$lastModified = date('Y-m-d', filemtime($filePath));
-			} else {
-				$lastModified = date('Y-m-d'); // Default to today's date
-			}
 			$sitemap .= "    <lastmod>$lastModified</lastmod>" . PHP_EOL;
-
-			                        // Add change frequency
-			$changeFreq = 'weekly'; // Default
-			if ($url === $startUrl) {
-				$changeFreq = 'daily'; // Homepage or important pages
-			}
-			$sitemap .= "    <changefreq>$changeFreq</changefreq>" . PHP_EOL;
-
-			                   // Add priority
-			$priority = '0.5'; // Default priority
-			if ($url === $startUrl) {
-				$priority = '1.0'; // Homepage
-			}
-			$sitemap .= "    <priority>$priority</priority>" . PHP_EOL;
-
+			$sitemap .= "    <changefreq>weekly</changefreq>" . PHP_EOL;
+			$sitemap .= "    <priority>0.5</priority>" . PHP_EOL;
 			$sitemap .= "  </url>" . PHP_EOL;
 		}
-		$sitemap .= '</urlset>' . PHP_EOL;
 
+		$sitemap .= '</urlset>' . PHP_EOL;
 		file_put_contents($outputFile, $sitemap);
 
-		// log things
-		echo "<pre>" . implode("\n", $log) . "</pre>";
-		echo '<p><strong>' . count($urls) . ' URLs added to sitemap.</strong></p>';
-		echo '<p>Sitemap saved as <a href="' . htmlspecialchars($outputFile) . '">' . htmlspecialchars($outputFile) . '</a></p>';
+		log_message("Sitemap generated: $outputFile");
+		echo '</div></div>';
+		echo "<div class=\"msg\">";
+		echo "<p><strong>" . count($urls) . " URLs added to sitemap.</strong></p>";
+		echo '<p>Sitemap saved as <a href="' . htmlspecialchars($outputFile) . '">' . htmlspecialchars($outputFile) . '</a></p></div>';
+		echo "<script>
+					progressElement.value = 100; // Ensure it reaches max
+					// Get the div element
+					let divElement = document.getElementById(\"logContainer\");
+					// Scroll to the bottom of the div
+					divElement.scrollTop = divElement.scrollHeight;
+				</script>";
 		exit;
 	}
+
 ?>
 
 <!DOCTYPE html>
@@ -156,97 +155,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Sitemap Generator</title>
-	<style>
-		html{
-			scroll-behavior: smooth;
-/*			scroll-padding-top: 160px;*/
-			font-size: min(4vmin, calc(100% + .125vmax));
-			/* the base padding size var(--p-unit) is for top/bottom on sections at desktop res, use half of that for left/right, lower than desktop res not accounted for in this file */
-			--p-unit: 3rem;
-			--p-unit-tb: var(--p-unit);
-			--p-unit-lr: calc(var(--p-unit) / 2);
-			/* see type-scale.com */
-			--type-scale: 1.200;
-			/* do some letter-spacing scaling similar to your type scale value */
-			--ls-scale: .0120em;
-			--vs-lh: 1.5;
-			--vs-gap: calc(var(--p-unit) / 2);
-		}
-		body{
-			margin:0;
-			/* remove empty space below footer on short content pages 1/2 */
-			display: flex;
-			flex-direction: column;
-			min-height: 100vh;
-		}
-		footer {
-			/* remove empty space below footer on short content pages 2/2 */
-			margin-top: auto;
-		}
-		header,main,footer{
-/*			border:1px solid red;*/
-			display: flex;
-			flex-direction: column;
-			flex-wrap: wrap;
-/*			width: calc(100% - (var(--p-unit-lr) *2));*/
-			gap: var(--vs-gap);
-			padding: 0 var(--p-unit-lr);
-		}
-		main{
-			padding: var(--p-unit-tb) var(--p-unit-lr);
-		}
-		header *,main *,footer *{
-/*			border:1px solid green;*/
-		}
-		form{
-			display: flex ;
-			flex-direction: column;
-			gap: var(--vs-gap);
-		}
-		input, textarea{
-			display:block;
-			width: 100%;
-			padding: 6px 12px;
-			font-size: 16px;
-			font-weight: 400;
-			line-height: 1.5;
-			color: #212529;
-			background-color: #fff;
-			background-clip: padding-box;
-			border: 1px solid #ced4da;
-			appearance: none;
-			border-radius: 4px;
-			transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-			&:focus{
-			    color: #212529;
-			    background-color: #fff;
-			    border-color: #86b7fe;
-			    outline: 0;
-			    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
-			}
-		}
-		button{
-			cursor: pointer;
-			outline: 0;
-			display: inline-block;
-			font-weight: 400;
-			line-height: 1.5;
-			text-align: center;
-			background-color: transparent;
-			border: 1px solid transparent;
-			padding: 6px 12px;
-			font-size: 1rem;
-			border-radius: .25rem;
-			transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-			color: #0d6efd;
-			border-color: #0d6efd;
-			&:hover {
-			    color: #fff;
-			    background-color: #0d6efd;
-			    border-color: #0d6efd;
-			}
-		}
-	</style>
+	<link rel="stylesheet" href="smg.css">
 </head>
 <body>
 	<header>
