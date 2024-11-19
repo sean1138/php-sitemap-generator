@@ -30,23 +30,15 @@ footer {
 header,
 main,
 footer {
-	/*			border:1px solid red;*/
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
-	/*			width: calc(100% - (var(--p-unit-lr) *2));*/
 	gap: var(--vs-gap);
 	padding: 0 var(--p-unit-lr);
 }
 
 main {
 	padding: var(--p-unit-tb) var(--p-unit-lr);
-}
-
-header *,
-main *,
-footer * {
-	/*			border:1px solid green;*/
 }
 
 form {
@@ -109,7 +101,6 @@ button {
 	padding: 1em .5em;
 	background: #16131A;
 	color: #00b900;
-/*	*/
 	overflow-y: auto;
 	height: 50vh;
 	border: 1px solid #ccc;
