@@ -247,19 +247,25 @@
 	</style>
 </head>
 <body>
-	<header><h1>Sitemap Generator</h1></header>
-	<main><form method="post">
-		<label>
-			Website URL:
-			<input type="url" name="url" required>
-		</label>
-		<label>
-			Blacklist (one rule per line):
-			<textarea name="blacklist" rows="5" placeholder="Example: /admin\n/example-folder"></textarea>
-		</label>
-		<button type="submit">Generate Sitemap</button>
-	</form></main>
-	<footer><p style="margin:0;text-align:center;">&copy; 2024.11.19</script>
-		</p></footer>
+	<header>
+		<h1>Sitemap Generator</h1>
+	</header>
+	<main>
+		<form method="post">
+			<label>
+				Website URL:
+				<input type="url" name="url" required>
+			</label>
+			<label>
+				Blacklist (one rule per line):
+				<textarea name="blacklist" rows="5" placeholder="Example: /admin\n/example-folder"></textarea>
+			</label>
+			<button type="submit">Generate Sitemap</button>
+		</form>
+	</main>
+	<footer>
+		<p style="margin:0;text-align:center;">&copy; 2024.11.19</script>
+		</p>
+	</footer>
 </body>
 </html>
