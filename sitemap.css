@@ -1,0 +1,41 @@
+urlset {
+	display: flex;
+	flex-direction: column;
+	padding: 1em;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: min(4vmin, calc(100% + .125vmax));
+}
+
+url {
+	display: grid;
+	grid-template-columns: 20fr 1fr 1fr 1fr;
+	gap: 1em;
+	padding: .5em 1em;
+	border: 1px solid black;
+}
+
+url+url {
+	border-top: none;
+}
+url:nth-child(odd) {
+	background-color: #eee;
+}
+url:hover{
+	background-color: #ccc;
+}
+
+loc {
+	word-break: break-word;
+}
+
+lastmod {
+	width: 10ch;
+}
+
+changefreq {
+	width: 8ch;
+}
+
+priority {
+	width: 3ch;
+}

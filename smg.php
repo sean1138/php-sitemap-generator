@@ -102,7 +102,7 @@
 		// Generate sitemap
 		$sitemap = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
 		// add a stylesheet to make it pretty
-		$sitemap .= '<?xml-stylesheet type="text/xsl" href="sitemap.xsl" ?>' . PHP_EOL;
+		$sitemap .= '<?xml-stylesheet type="text/css" href="sitemap.css"?>' . PHP_EOL;
 		$sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
 		foreach ($urls as $url) {
