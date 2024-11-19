@@ -203,7 +203,7 @@
 		}
 		input, textarea{
 			display:block;
-
+			width: 100%;
 			padding: 6px 12px;
 			font-size: 16px;
 			font-weight: 400;
@@ -222,7 +222,6 @@
 			    outline: 0;
 			    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 			}
-
 		}
 		button{
 			cursor: pointer;
@@ -244,7 +243,6 @@
 			    background-color: #0d6efd;
 			    border-color: #0d6efd;
 			}
-
 		}
 	</style>
 </head>
