@@ -15,16 +15,20 @@
 		ob_implicit_flush(true); // Enable implicit flush for immediate output
 		header('Content-Type: text/html; charset=UTF-8');
 		echo "<link rel='stylesheet' href='smg.css'><div class='log' id='logContainer'><div id='logOutput'>";
-		echo "<progress id='crawlProgress' value='0' max='100' style='margin-top: 10px; position: fixed; top: 1em; right: 2em;'></progress>
+		echo "<progress id='crawlProgress' value='0' max='100' style='display:block; margin-top: 10px; position: fixed; top: 1em; right: 2em;'></progress>
 		<script>
 					// update progress bar
 					const progressElement = document.getElementById('crawlProgress');
 					let totalUrls = 1; // Start with 1 to prevent division by zero
 					let crawledUrls = 0;
+					// Get the div element
+					let divElement = document.getElementById(\"logContainer\");
 
 					function updateProgress() {
 						crawledUrls++;
 						progressElement.value = (crawledUrls / totalUrls) * 100;
+						// Scroll to the bottom of the div
+						divElement.scrollTop = divElement.scrollHeight;
 					}
 
 					function setTotalUrls(count) {
@@ -32,7 +36,6 @@
 						progressElement.max = count;
 					}
 				</script>";
-		echo "<script>document.getElementById('crawlProgress').style.display = 'block';</script>";
 		$estimatedTotalUrls = 100; // Replace this with an actual estimation if available
 		echo "<script>setTotalUrls($estimatedTotalUrls);</script>";
 		flush();
@@ -139,8 +142,6 @@
 		echo '<p>Sitemap saved as <a href="' . htmlspecialchars($outputFile) . '">' . htmlspecialchars($outputFile) . '</a></p></div>';
 		echo "<script>
 					progressElement.value = 100; // Ensure it reaches max
-					// Get the div element
-					let divElement = document.getElementById(\"logContainer\");
 					// Scroll to the bottom of the div
 					divElement.scrollTop = divElement.scrollHeight;
 				</script>";
@@ -175,7 +176,7 @@
 		</form>
 	</main>
 	<footer>
-		<p style="margin:0;text-align:center;">&copy; 2024.11.19</script>
+		<p style="margin:0;text-align:center;">VSXD 2024.11.19</script>
 		</p>
 	</footer>
 </body>
