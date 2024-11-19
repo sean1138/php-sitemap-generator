@@ -11,4 +11,8 @@ textarea to add custom paths to blacklist if desired.
 
 works on my machine ;)
 
-![screenshot](https://github.com/sean1138/smg/blob/main/screenshot.jpg?raw=true)
+## step 1
+![screenshot of step 1](https://github.com/sean1138/smg/blob/main/screenshot-01.jpg?raw=true)
+
+## results
+![screenshot of results](https://github.com/sean1138/smg/blob/main/screenshot-02.jpg?raw=true)
