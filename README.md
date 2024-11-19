@@ -12,7 +12,7 @@ textarea to add custom paths to blacklist if desired but not tested.
 tested PHP versions 8.1.0 and 7.0.33... works on my machines ;)
 
 ## step 1
-![screenshot of step 1](https://github.com/sean1138/smg/blob/main/screenshot-01.jpg?raw=true)
+![screenshot of step 1](screenshot-01.jpg)
 
 ## results
-![screenshot of results](https://github.com/sean1138/smg/blob/main/screenshot-02.jpg?raw=true)
+![screenshot of results](screenshot-02.jpg)
