@@ -120,7 +120,7 @@ button {
 	margin: 0;
 	width: 80ch;
 }
-.log p + p{
+.log p ~ p{
 	margin-top:.5em;
 }
 .skip{
