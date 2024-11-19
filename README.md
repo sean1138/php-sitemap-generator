@@ -1,0 +1,2 @@
+# smg
+php sitemap generater
