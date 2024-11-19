@@ -14,8 +14,8 @@
 		set_time_limit(0);       // Allow script to run indefinitely for large crawls
 		ob_implicit_flush(true); // Enable implicit flush for immediate output
 		header('Content-Type: text/html; charset=UTF-8');
-		echo "<link rel='stylesheet' href='smg.css'><div class='log' id='logContainer'><div id='logOutput'>";
-		echo "<progress id='crawlProgress' value='0' max='100' style='display:block; margin-top: 10px; position: fixed; top: 1em; right: 2em;'></progress>
+		echo "<link rel=\"stylesheet\" href=\"smg.css\"><div class=\"log\" id=\"logContainer\"><div id=\"logOutput\">";
+		echo "<progress id=\"crawlProgress\" value=\"0\" max=\"100\" style=\"display:block; margin-top: 10px; position: fixed; top: 1em; right: 2em;\"></progress>
 		<script>
 					// update progress bar
 					const progressElement = document.getElementById('crawlProgress');
