@@ -18,4 +18,4 @@ tested PHP versions 8.1.0 and 7.0.33... works on my machines ;)
 ![screenshot of results](screenshot-02.jpg)
 
 ## xml file with style
-![screenshot of results](screenshot-xml-output-w-style.jpg)
+![screenshot of xml file output with css style](screenshot-xml-output-w-style.jpg)
