@@ -12,14 +12,14 @@ textarea to add custom paths to blacklist if desired but not tested.
 tested PHP versions 8.1.0 and 7.0.33... works on my machines ;)
 
 ## demonstration video
-[![video thumbnail](smg-video-thumb.jpg)](https://youtu.be/mdeS3yUa5C4
+[![video thumbnail](readme-images/smg-video-thumb.jpg)](https://youtu.be/mdeS3yUa5C4
  "sitemap generator demonstration")
 
 ## step 1
-![screenshot of step 1](screenshot-01.jpg)
+![screenshot of step 1](readme-images/screenshot-01.jpg)
 
 ## results
-![screenshot of results](screenshot-02.jpg)
+![screenshot of results](readme-images/screenshot-02.jpg)
 
 ## xml file with style
-![screenshot of xml file output with css style](screenshot-xml-output-w-style.jpg)
+![screenshot of xml file output with css style](readme-images/screenshot-xml-output-w-style.jpg)
