@@ -1,7 +1,7 @@
 <?php
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
-	echo 'PHP Version: ' . phpversion();
+	// echo 'PHP Version: ' . phpversion();
 
 	// polyfill
 	if (! function_exists('str_starts_with')) {
