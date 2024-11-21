@@ -115,13 +115,16 @@ button {
 	margin-top:.5em;
 }
 .skip{
-	color:ff0;
+	color:#ff0;
 }
 .fail{
-	color:f00;
+	color:#f00;
 }
 .excluded{
-	color:f80;
+	color:#f80;
+}
+.info{
+	color:#88f;
 }
 .log a{
 	color:#00bbff;

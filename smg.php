@@ -93,6 +93,26 @@
 				return;
 			}
 
+			// Check for noindex meta tag
+			if (preg_match('/<meta\s+name=["\']robots["\']\s+content=["\']noindex["\']/', $html)) {
+				log_message("<span class=\"skip\">Skipped (noindex): <a href=\"$url\" target=\"_blank\">$url</a></span>");
+				return;
+			}
+
+			// Check for canonical URL
+			if (preg_match('/<link\s+rel=["\']canonical["\']\s+href=["\']([^"\']+)["\']/', $html, $matches)) {
+				$canonicalUrl = resolveUrl($matches[1], $url);
+				if ($canonicalUrl !== $url) {
+					log_message("<span class=\"info\">Using canonical URL: <a href=\"$canonicalUrl\" target=\"_blank\">$canonicalUrl</a> instead of <a href=\"$url\" target=\"_blank\">$url</a></span>");
+					// Check if we've already visited the canonical URL
+					if (isset($visited[$canonicalUrl])) {
+						return; // Skip processing since it's already visited
+					}
+					$visited[$canonicalUrl] = true;          // Mark the canonical URL as visited
+					$url                    = $canonicalUrl; // Update URL to canonical
+				}
+			}
+
 			$urls[] = $url;
 
 			preg_match_all('/<a\s+href="([^"]+)"/i', $html, $matches);
@@ -127,7 +147,26 @@
 		$sitemap .= '<?xml-stylesheet type="text/css" href="sitemap.css"?>' . PHP_EOL;
 		$sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
+		// configurable change frequnecy
 		foreach ($urls as $url) {
+			$changefreq = 'weekly'; // Default
+			$priority   = '0.5';    // Default
+
+			                          // Customize based on URL patterns
+			if ($url === $startUrl) { // Main page
+				$changefreq = 'daily';
+				$priority   = '1.0';
+			} elseif (strpos($url, '/blog') !== false) { // Blog pages
+				$changefreq = 'daily';
+				$priority   = '0.8';
+			} elseif (strpos($url, '/product') !== false) { // Product pages
+				$changefreq = 'weekly';
+				$priority   = '0.7';
+			} elseif (strpos($url, '/about') !== false || strpos($url, '/contact') !== false) { // Static pages
+				$changefreq = 'monthly';
+				$priority   = '0.3';
+			}
+
 			$sitemap .= "  <url>" . PHP_EOL;
 			$sitemap .= "    <loc>" . htmlspecialchars($url) . "</loc>" . PHP_EOL;
 
@@ -137,8 +176,8 @@
 			$lastModified = file_exists($filePath) ? date('Y-m-d', filemtime($filePath)) : date('Y-m-d');
 
 			$sitemap .= "    <lastmod>$lastModified</lastmod>" . PHP_EOL;
-			$sitemap .= "    <changefreq>weekly</changefreq>" . PHP_EOL;
-			$sitemap .= "    <priority>0.5</priority>" . PHP_EOL;
+			$sitemap .= "    <changefreq>$changefreq</changefreq>" . PHP_EOL;
+			$sitemap .= "    <priority>$priority</priority>" . PHP_EOL;
 			$sitemap .= "  </url>" . PHP_EOL;
 		}
 
