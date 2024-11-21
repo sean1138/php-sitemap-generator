@@ -1,7 +1,7 @@
 <?php
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
-	// echo 'PHP Version: ' . phpversion();
+	echo 'PHP Version: ' . phpversion();
 
 	// polyfill
 	if (! function_exists('str_starts_with')) {
@@ -170,10 +170,16 @@
 			$sitemap .= "  <url>" . PHP_EOL;
 			$sitemap .= "    <loc>" . htmlspecialchars($url) . "</loc>" . PHP_EOL;
 
-			$parsedUrl    = parse_url($url);
-			$path         = isset($parsedUrl['path']) ? $parsedUrl['path'] : '/';
-			$filePath     = $_SERVER['DOCUMENT_ROOT'] . $path;
-			$lastModified = file_exists($filePath) ? date('Y-m-d', filemtime($filePath)) : date('Y-m-d');
+			$parsedUrl = parse_url($url);
+			$path      = isset($parsedUrl['path']) && is_string($parsedUrl['path']) ? $parsedUrl['path'] : '/'; // Ensure $path is always a string
+			$filePath  = $_SERVER['DOCUMENT_ROOT'] . $path;
+
+			// Ensure $filePath exists and is a valid file
+			if (is_string($filePath) && file_exists($filePath)) {
+				$lastModified = date('Y-m-d', filemtime($filePath));
+			} else {
+				$lastModified = date('Y-m-d'); // Fallback to current date
+			}
 
 			$sitemap .= "    <lastmod>$lastModified</lastmod>" . PHP_EOL;
 			$sitemap .= "    <changefreq>$changefreq</changefreq>" . PHP_EOL;
