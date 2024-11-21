@@ -1,5 +1,5 @@
 # smg
-php sitemap generator
+php sitemap.xml generator
 
 i let chatgpt do the heavy lifting on the PHP code, use at your own risk.
 
