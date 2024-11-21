@@ -120,6 +120,9 @@ button {
 .fail{
 	color:f00;
 }
+.excluded{
+	color:f80;
+}
 .log a{
 	color:#00bbff;
 	word-break: break-word;

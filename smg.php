@@ -60,6 +60,9 @@
 		}
 
 		function crawl($url, $baseUrl, $blacklist, &$visited, &$urls) {
+			// List of file extensions to exclude
+			$excludedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+
 			if (isset($visited[$url]) || ! str_starts_with($url, $baseUrl)) {
 				return;
 			}
@@ -68,6 +71,13 @@
 			if (strpos($url, '#') !== false || str_starts_with($url, 'mailto:') ||
 				str_starts_with($url, 'tel:') || str_starts_with($url, 'javascript:')) {
 				log_message("<span class=\"skip\">Skipped: <a href=\"$url\" target=\"_blank\">$url</a></span>");
+				return;
+			}
+
+			// Exclude URLs with specific file extensions
+			$extension = strtolower(pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION));
+			if (in_array($extension, $excludedExtensions)) {
+				log_message("<span class=\"excluded\">Excluded file type: <a href=\"$url\" target=\"_blank\">$url</a></span>");
 				return;
 			}
 
