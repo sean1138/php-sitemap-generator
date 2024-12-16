@@ -231,8 +231,7 @@
 		</form>
 	</main>
 	<footer>
-		<p style="margin:0;text-align:center;">VSXD 2024.11.19</script>
-		</p>
+		<p style="margin:0;text-align:center;">VSXD 2024.11.19</p>
 	</footer>
 </body>
 </html>
