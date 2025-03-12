@@ -61,7 +61,7 @@
 
 		function crawl($url, $baseUrl, $blacklist, &$visited, &$urls) {
 			// List of file extensions to exclude
-			$excludedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+			$excludedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'txt'];
 
 			if (isset($visited[$url]) || ! str_starts_with($url, $baseUrl)) {
 				return;
@@ -108,8 +108,8 @@
 					if (isset($visited[$canonicalUrl])) {
 						return; // Skip processing since it's already visited
 					}
-					$visited[$canonicalUrl] = true;          // Mark the canonical URL as visited
-					$url                    = $canonicalUrl; // Update URL to canonical
+					$visited[$canonicalUrl] = true; // Mark the canonical URL as visited
+					$url = $canonicalUrl; // Update URL to canonical
 				}
 			}
 
@@ -152,7 +152,7 @@
 			$changefreq = 'weekly'; // Default
 			$priority   = '0.5';    // Default
 
-			                          // Customize based on URL patterns
+			// Customize based on URL patterns
 			if ($url === $startUrl) { // Main page
 				$changefreq = 'daily';
 				$priority   = '1.0';
